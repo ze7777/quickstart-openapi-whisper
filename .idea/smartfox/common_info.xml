@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SmartFoxWorkToolsProjectState">
-    <option name="branch" value="main" />
-    <option name="gitUrl" value="https://github.com/ze7777/quickstart-openapi-whisper.git" />
-    <option name="localBranch" value="main" />
-    <option name="revision" value="7fe44989e105d31969c86720357dcee40a2eb9bf" />
-  </component>
-</project>
