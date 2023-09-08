@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="计算巢是阿里云开放给企业应用服务商的服务管理平台。服务商能够在计算巢上发布私有化部署服务，为其客户提供云上软件一键部署的能力；同时也支持全托管模式的服务，赋能服务商托管其客户资源。">
+  <title>OpenAI Whisper 计算巢部署使用文档 - Aliyun 计算巢 x Whisper</title>
+
+  <link rel="shortcut icon" href="img/favicon.ico">
+
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  
+
+  
+  
+
+  
+    <script src="search/main.js"></script>
+  
+
+  
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="logo">
+          <img src="./img/logo-2x.png">
+        </div>
+        <div class="nav-list">
+          <ul>
+          
+              <li><a href="#openai-whisper">OpenAI Whisper 计算巢部署使用文档</a></li>
+              
+                  <li><a href="#_1">概述</a></li>
+                  
+              
+                  <li><a href="#_2">实例说明</a></li>
+                  
+              
+                  <li><a href="#_3">部署流程</a></li>
+                  
+                      <li class="li-h3"><a href="#0">0. 准备工作</a></li>
+                  
+                      <li class="li-h3"><a href="#1">1. 部署入口</a></li>
+                  
+                      <li class="li-h3"><a href="#2-whisper">2. 创建Whisper服务实例</a></li>
+                  
+                      <li class="li-h3"><a href="#3-whisoer">3. 启动Whisoer服务</a></li>
+                  
+                      <li class="li-h3"><a href="#_4">更多示例</a></li>
+                  
+              
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      
+      <div class="content-inner">        
+        
+        <h1 id="openai-whisper">OpenAI Whisper 计算巢部署使用文档</h1>
+<h2 id="_1">概述</h2>
+<p>使用计算巢，您可以一键秒级部署 Whisper，即刻开启AIGC之旅。不使用计算巢，您可能需要花费数小时、甚至更长的时间在环境准备、服务部署上。基于计算巢可以极大提升你的工作效率，把精力集中在业务逻辑之上。</p>
+<p>拥有ChatGPT语言模型的OpenAI公司，开源了 Whisper 自动语音识别系统，OpenAI 强调 Whisper 的语音识别能力已达到人类水准。</p>
+<p>Whisper 是一个通用的语音识别模型，它使用了大量的多语言和多任务的监督数据来训练，能够在英语语音识别上达到接近人类水平的鲁棒性和准确性。Whisper 还可以进行多语言语音识别、语音翻译和语言识别等任务。Whisper 的架构是一个简单的端到端方法，采用了编码器-解码器的Transformer模型，将输入的音频转换为对应的文本序列，并根据特殊的标记来指定不同的任务。</p>
+<h2 id="_2">实例说明</h2>
+<p>Whisper 部署的为社区开源版本，源码参考 <a href="https://huggingface.co/spaces/sanchit-gandhi/whisper-large-v2/tree/main">Hugging Face Repo</a>，目前可以选择的实例规格如下:</p>
+<table>
+<thead>
+<tr>
+<th>规格族</th>
+<th>vCPU与内存</th>
+<th>系统盘</th>
+<th>GPU/FPGA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ecs.gn7i-c16g1.4xlarge</td>
+<td>16 vCPU 60 GiB</td>
+<td>200G</td>
+<td>1 * NVIDIA A10 (24G)</td>
+</tr>
+<tr>
+<td>ecs.gn7i-c32g1.8xlarge</td>
+<td>32 vCPU 188 GiB</td>
+<td>200G</td>
+<td>1 * NVIDIA A10 (24G)</td>
+</tr>
+<tr>
+<td>ecs.gn7i-c32g1.16xlarge</td>
+<td>64 vCPU 376 GiB</td>
+<td>200G</td>
+<td>2 * NVIDIA A10 (24G)</td>
+</tr>
+<tr>
+<td>ecs.gn7i-c32g1.32xlarge</td>
+<td>128 vCPU 752 GiB</td>
+<td>200G</td>
+<td>4 * NVIDIA A10 (24G)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">部署流程</h2>
+<h3 id="0">0. 准备工作</h3>
+<p>在正式开始使用前，您需要一个阿里云账号，对ECS、VPC等资源进行访问和创建操作。</p>
+<ul>
+<li>若您使用个人账号，可以直接创建服务实例</li>
+<li>若您使用RAM用户创建服务实例，且是第一次使用阿里云计算巢</li>
+<li>需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见 <a href="https://help.aliyun.com/document_detail/121945.html">为RAM用户授权</a>。</li>
+<li>且需要授权创建关联角色，参考下图，选中 <strong>同意授权并创建关联角色</strong>
+<img alt="image_1.png" src="image_1.png" /></li>
+</ul>
+<h3 id="1">1. 部署入口</h3>
+<p>您可以在阿里云计算巢自行搜索，也可以通过下述部署链接快速到达:
+<a href="https://computenest.console.aliyun.com/vendor/cn-hangzhou/serviceDetail/service-51e7e7bf804d44d4bcd0/1">部署链接</a></p>
+<h3 id="2-whisper">2. 创建Whisper服务实例</h3>
+<h4 id="21">2.1 参数列表</h4>
+<p>您在创建服务实例的过程中，需要配置服务实例信息的参数列表，具体如下:
+<img alt="image_2.png" src="image_2.png" /></p>
+<h4 id="22">2.2 具体步骤</h4>
+<p>创建服务按如下步骤进行，参考下图：</p>
+<ol>
+<li>创建实例名称</li>
+<li>
+<p>选择地域，如下图中 "华东1（杭州）"
+<img alt="image_3.png" src="image_3.png" /></p>
+</li>
+<li>
+<p>选择付费类型："按量付费" 或 "包年包月"</p>
+</li>
+<li>
+<p>选择实例类型 &amp; 配置实例的密码
+<img alt="image_4.png" src="image_4.png" /></p>
+</li>
+<li>
+<p>输入软件登录用户名&amp;登陆密码</p>
+</li>
+<li>
+<p>点击"下一步:确认订单"按钮，进入订单确认页面
+<img alt="image_5.png" src="image_5.png" /></p>
+</li>
+<li>
+<p>勾选"服务条款"中的复选框</p>
+</li>
+<li>点击"立即创建"按钮，即可创建Whisper的服务实例
+<img alt="image_6.png" src="image_6.png" /></li>
+</ol>
+<h3 id="3-whisoer">3. 启动Whisoer服务</h3>
+<p>查看服务实例：服务实例创建成功后，部署时间约为5分钟。等待服务实例变为「已部署」状态，点击"详情"按钮，即可进入服务实例详情页面，如下图所示:
+<img alt="image_7.png" src="image_7.png" /></p>
+<p>进入服务实例后，可以在页面上获取"登录地址"：
+<img alt="image_8.png" src="image_8.png" /></p>
+<p>点击登录地址后，输入创建服务实例配置的软件用户名&amp;密码，即可访问已经部署好的Whisper Web页面。建议新手先通过Whisper Web，使用demo功能快速上手：
+<img alt="image_9.png" src="image_9.png" /></p>
+<p>用户可以上传音频文件，点击Transcribe，即可将音频转换成文字
+<img alt="image_10.png" src="image_10.png" /></p>
+<h3 id="_4">更多示例</h3>
+<p>更多功能请参考：<a href="https://github.com/openai/whisper">Whisper使用文档</a></p>
+<p>期待您更深入的探索，也欢迎一起实践并补充相应案例到本文档。</p>
+        
+      </div>
+
+      <div class="copyrights">© 2009-2022 Aliyun.com 版权所有</div>
+    </div>
+  </div>
+  
+  <!--
+  MkDocs version      : 1.5.2
+  Docs Build Date UTC : 2023-09-08 09:57:59.098174+00:00
+  -->
+</body>
+</html>
